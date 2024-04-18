@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TaskHandlerApplication {
+public class NotesHandlerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TaskHandlerApplication.class, args);
+		SpringApplication.run(NotesHandlerApplication.class, args);
 	}
 
 }

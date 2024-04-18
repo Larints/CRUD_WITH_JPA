@@ -1,44 +1,54 @@
 package ru.gb.task_handler.controller;
 
 import lombok.AllArgsConstructor;
+import org.aspectj.apache.bcel.classfile.Module;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.gb.task_handler.model.Task;
-import ru.gb.task_handler.model.TaskStatus;
-import ru.gb.task_handler.service.TaskService;
+import ru.gb.task_handler.model.Note;
+import ru.gb.task_handler.service.NoteService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/tasks")
+@RequestMapping("/notes")
 public class Controller {
 
-    private final TaskService service;
+    private final NoteService service;
 
     @GetMapping
-    public List<Task> getTasks() {
-        return service.getAllTasks();
+    public ResponseEntity<List<Note>> getNotes() {
+        return new ResponseEntity<>(service.getAllNotes(), HttpStatus.OK);
     }
 
-    @PostMapping("/add-task")
-    public Task addTask(@RequestParam String description) {
-        return service.addTask(description);
+    @PostMapping("/add-note")
+    public ResponseEntity<Note> addTask(@RequestParam String description) {
+        return new ResponseEntity<>(service.addNote(description), HttpStatus.CREATED);
     }
 
-    @GetMapping("status/{status}")
-    public List<Task> getTaskByStatus(@PathVariable TaskStatus status) {
-        return service.getTaskByStatus(status);
+
+    @PutMapping("update-note/{id}/{description}")
+    public ResponseEntity<Note> updateNote(@PathVariable Long id, @PathVariable String description) {
+        return new ResponseEntity<>(service.updateNote(id, description), HttpStatus.OK);
     }
 
-    @PutMapping("update-task/{id}/{status}")
-    public Task updateTaskStatus(@PathVariable Long id, @PathVariable TaskStatus status) {
-        return service.updateTaskStatus(id, status);
+    @GetMapping("/{id}")
+    public ResponseEntity<Note> getNoteById(@PathVariable Long id) {
+        Note note;
+        try {
+            note = service.getNoteById(id);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Note());
+        }
+        return new ResponseEntity<>(note, HttpStatus.OK);
     }
 
-    @DeleteMapping("delete-task/{id}")
-    public String deleteTaskById(@PathVariable Long id) {
-        service.removeTask(id);
-        return "Task deleted";
+    @DeleteMapping("delete-note/{id}")
+    public ResponseEntity<Note> deleteNoteById(@PathVariable Long id) {
+        service.removeNote(id);
+        return ResponseEntity.ok().build();
     }
 
 }
