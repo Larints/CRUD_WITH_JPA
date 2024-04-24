@@ -3,6 +3,8 @@ package ru.gb.task_handler.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import ru.gb.task_handler.aspect.AfterUserAction;
+import ru.gb.task_handler.aspect.TrackUserAction;
 import ru.gb.task_handler.model.Note;
 import ru.gb.task_handler.repository.NoteRepository;
 
@@ -23,6 +25,7 @@ public class NoteService {
         return repository.findAll();
     }
 
+    @TrackUserAction
     public Note addNote(String description) {
         Note note = new Note();
         note.setId(count.incrementAndGet());
@@ -35,6 +38,7 @@ public class NoteService {
         return repository.findById(id).orElseThrow(null);
     }
 
+    @AfterUserAction
     public Note updateNote(Long id, String description) {
         Note note = repository.findById(id).orElse(null);
         if (note != null) {
