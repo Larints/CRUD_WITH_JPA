@@ -40,7 +40,7 @@ public class NoteService {
 
     @AfterUserAction
     public Note updateNote(Long id, String description) {
-        Note note = repository.findById(id).orElse(null);
+        Note note = repository.findById(id).orElseThrow(NullPointerException::new);
         if (note != null) {
             note.setDescription(description);
             repository.save(note);
