@@ -1,15 +1,14 @@
 package ru.gb.task_handler.controller;
 
 import lombok.AllArgsConstructor;
-import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.task_handler.model.Note;
+import ru.gb.task_handler.service.FileGateway;
 import ru.gb.task_handler.service.NoteService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -18,6 +17,8 @@ public class Controller {
 
     private final NoteService service;
 
+    private final FileGateway fileGateway;
+
     @GetMapping
     public ResponseEntity<List<Note>> getNotes() {
         return new ResponseEntity<>(service.getAllNotes(), HttpStatus.OK);
@@ -25,6 +26,7 @@ public class Controller {
 
     @PostMapping("/add-note")
     public ResponseEntity<Note> addTask(@RequestParam String description) {
+        fileGateway.writeFile("notes", description);
         return new ResponseEntity<>(service.addNote(description), HttpStatus.CREATED);
     }
 
